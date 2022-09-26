@@ -30,9 +30,31 @@ jobs:
    - name: Build & deploy Android release
      run: bundle exec fastlane distributeQA
  
-   - name: Upload build artifacts
-     uses: actions/upload-artifact@v2
+   - name: Create Release
+     id: create_release
+     uses: actions/create-release@v1
+     env:
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
      with:
-       name: assets
-       path: |
-         ${{ github.workspace }}/app/build/outputs/bundle/release
+       tag_name: ${{ github.ref }}
+       release_name: Release ${{ github.ref }}
+       body: |
+         Test upload-to-github-release works with ```actions/create-release```
+       draft: true
+       prerelease: true
+   - uses: xresloader/upload-to-github-release@main
+     env:
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     with:
+       file: "${{ github.workspace }}/app/build/outputs/bundle/release"
+       delete_file: "${{ github.workspace }}/app/build/outputs/bundle/release"
+       release_id: ${{ steps.create_release.outputs.id }}
+       overwrite: true
+       verbose: true
+   
+  #  - name: Upload build artifacts
+  #    uses: actions/upload-artifact@v2
+  #    with:
+  #      name: assets
+  #      path: |
+  #        ${{ github.workspace }}/app/build/outputs/bundle/release
