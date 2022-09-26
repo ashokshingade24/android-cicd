@@ -16,19 +16,18 @@
 
 default_platform(:android)
 platform :android do
-
     desc "this lane distributes QA app to testers"
     lane :distributeQA do
-        gradle(
-  task: "clean assemble",
-  build_type: "Debug"
-)
- firebase_app_distribution(
-            service_credentials_file: "firebase-distribution-key.json",
-            app: ENV['APP_ID_TEST'],
-            release_notes: "Lots of amazing new features to test out!",
-            groups: "qa"
-        )
+      gradle(
+        task: "bundle",
+        build_type: "release"
+      )
+#  firebase_app_distribution(
+#             service_credentials_file: "firebase-distribution-key.json",
+#             app: ENV['APP_ID_TEST'],
+#             release_notes: "Lots of amazing new features to test out!",
+#             groups: "qa"
+#         )
        
     end
   
